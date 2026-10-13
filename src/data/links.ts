@@ -7,5 +7,5 @@ export const SUBSTACK_URL = 'https://aianvil.substack.com';
 export const SUBSTACK_SUBSCRIBE_URL = 'https://aianvil.substack.com/subscribe';
 export const PERFECT_PLACEMENT_URL = 'https://github.com/askoulwassim/perfect-placement';
 export const SPECDR_URL = 'https://specdr.ai';
-export const LINKEDIN_URL = 'https://www.linkedin.com/in/askoulwassim/';
+export const LINKEDIN_URL = 'https://www.linkedin.com/company/ai-anvil';
 export const GITHUB_URL = 'https://github.com/askoulwassim';
