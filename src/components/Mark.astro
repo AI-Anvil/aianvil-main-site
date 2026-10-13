@@ -1,0 +1,13 @@
+---
+import { Image } from 'astro:assets';
+import mark from '../assets/ai-anvil-mark.png';
+
+interface Props {
+  height: number;
+}
+
+const { height } = Astro.props;
+const width = Math.round((mark.width / mark.height) * height);
+---
+
+<Image src={mark} alt="" width={width} height={height} densities={[1, 2]} loading="eager" style={`height: ${height}px; width: auto; display: block`} />

@@ -1,0 +1,99 @@
+/* Design tokens from docs/design-handoff/reference/F-console-loop.dc.html */
+:root {
+  --ground: #13102A;
+  --surface: #1B1738;
+  --surface-2: #221D45;
+  --panel: #2A2350;
+  --rule: #2F2A52;
+  --rule-2: #3A3466;
+  --ink: #F3F0FF;
+  --ink-2: #D9D4F2;
+  --muted: #B4ADD6;
+  --idle: #8E87B3;
+  --cold: #7AA2FF;
+  --lilac: #B8AAFF;
+  --amber: #FFB347;
+  --molten: #FF6A3D;
+  --on-accent: #1A0E08;
+  --you-ink: #FFF1DC;
+  --agent-ink: #E6ECFF;
+  --font: 'Schibsted Grotesk', sans-serif;
+  --font-ar: 'Noto Kufi Arabic', sans-serif;
+  --max: 1240px;
+  --gutter: 24px;
+  color-scheme: dark;
+}
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  background: var(--ground);
+  color: var(--ink);
+  font-family: var(--font);
+  font-size: 19px;
+  line-height: 1.55;
+}
+
+:where(a) { color: var(--ink); }
+:where(a):hover { color: var(--amber); }
+
+button:focus-visible,
+a:focus-visible,
+[tabindex]:focus-visible {
+  outline: 2px solid var(--amber);
+  outline-offset: 3px;
+}
+
+img, video { max-width: 100%; }
+
+.page {
+  min-height: 100vh;
+  overflow-x: hidden;
+}
+
+.wrap {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding-left: var(--gutter);
+  padding-right: var(--gutter);
+}
+
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+/* Buttons */
+.btn {
+  text-decoration: none;
+  font-weight: 700;
+  border-radius: 12px;
+  box-sizing: border-box;
+  display: inline-flex;
+  align-items: center;
+}
+.btn-molten { background: var(--molten); color: var(--on-accent); }
+.btn-amber { background: var(--amber); color: var(--on-accent); }
+.btn-molten:hover, .btn-amber:hover { color: var(--on-accent); }
+
+.choice {
+  font-family: inherit;
+  font-size: 17px;
+  font-weight: 700;
+  padding: 12px 18px;
+  min-height: 48px;
+  border-radius: 12px;
+  cursor: pointer;
+}
+.choice-solid { border: none; background: var(--amber); color: var(--on-accent); }
+.choice-outline { border: 2px solid var(--amber); background: transparent; color: var(--you-ink); }

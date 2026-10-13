@@ -1,0 +1,356 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>AI Anvil Home, Console in the Loop system</title>
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Schibsted+Grotesk:wght@400;500;700;800&family=Noto+Kufi+Arabic:wght@500&display=swap">
+<style>
+body{margin:0;background:#13102A}
+a{color:#F3F0FF}a:hover{color:#FFB347}
+button:focus-visible,a:focus-visible{outline:2px solid #FFB347;outline-offset:3px}
+</style>
+</helmet>
+<div id="top" style="background: #13102A; color: #F3F0FF; font-family: 'Schibsted Grotesk', sans-serif; font-size: 19px; line-height: 1.55; min-height: 100vh; overflow-x: hidden">
+
+<div style="max-width: 1240px; margin: 0 auto; padding: 0 24px">
+<header style="display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 20px; padding: 28px 0">
+<a href="#top" style="display: flex; align-items: center; gap: 12px; flex-wrap: wrap; text-decoration: none">
+<img src="/_blob/ab9584ad43cf732fec16b7d473c90f6b" alt="" style="height: 34px; width: auto; display: block">
+<span style="font-weight: 800; font-size: 26px; letter-spacing: -0.02em; color: #F3F0FF">AI Anvil</span>
+<span style="font-size: 16px; color: #B4ADD6">by Wassim Askoul</span>
+</a>
+<nav aria-label="Primary" style="display: flex; flex-wrap: wrap; align-items: center; gap: 26px; font-size: 17px; font-weight: 500">
+<a href="#work" style="text-decoration: none">Projects</a>
+<a href="#services" style="text-decoration: none">Work with me</a>
+<a href="https://aianvil.substack.com" style="text-decoration: none">Writing</a>
+<a href="https://calendly.com/aianvil/ai-anvil-consultation" onClick="{{openBooking}}" style="text-decoration: none; background: #FF6A3D; color: #1A0E08; font-weight: 700; padding: 12px 20px; border-radius: 12px; min-height: 44px; box-sizing: border-box; display: inline-flex; align-items: center">Let's talk</a>
+</nav>
+</header>
+</div>
+
+<section aria-labelledby="hero-title" style="max-width: 1240px; margin: 0 auto; padding: 64px 24px 48px; display: flex; flex-wrap: wrap; gap: 28px 72px; align-items: flex-end">
+<h1 id="hero-title" style="margin: 0; flex: 999 1 560px; font-weight: 800; font-size: clamp(54px, 7.6vw, 112px); line-height: 0.94; letter-spacing: -0.045em">Humans decide. Agents carry.</h1>
+<div style="flex: 1 1 340px; display: flex; flex-direction: column; gap: 14px">
+<p style="margin: 0; max-width: 40ch; font-size: 21px; line-height: 1.5; color: #D9D4F2">I work inside products that already exist: your code, your customers, your team. Anyone can spin up a new app in an afternoon. I make the one you have better, fast, and show your team how as we go.</p>
+<p style="margin: 0; font-size: 16px; color: #B4ADD6">Try it below. The agents carry, you make the calls.</p>
+</div>
+</section>
+
+<section aria-label="Try the loop on an existing product" style="max-width: 1240px; margin: 0 auto; padding: 0 24px 24px">
+<div style="background: #1B1738; border: 1px solid #2F2A52; border-radius: 22px; overflow: hidden">
+
+<div aria-hidden="true" style="display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 6px; padding: 18px 28px 0">
+<sc-for list="{{segments}}" as="seg" hint-placeholder-count="3">
+<div style="display: flex; flex-direction: column; gap: 8px">
+<div style="height: 6px; border-radius: 3px; background: {{seg.bar}}"></div>
+<span style="font-size: 14px; font-weight: 700; color: {{seg.ink}}">{{seg.label}}</span>
+</div>
+</sc-for>
+</div>
+
+<div style="display: flex; flex-wrap: wrap">
+<div style="flex: 999 1 560px; min-width: 0; padding: 28px; display: flex; flex-direction: column; gap: 18px">
+<div style="display: flex; flex-wrap: wrap; gap: 14px 24px; font-size: 15px; color: #D9D4F2">
+<span style="display: inline-flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 50%; background: #7AA2FF"></span>Agent carries</span>
+<span style="display: inline-flex; align-items: center; gap: 8px"><span aria-hidden="true" style="width: 10px; height: 10px; border-radius: 3px; background: #FFB347"></span>You decide</span>
+<span style="color: #B4ADD6">Working in: your existing product</span>
+</div>
+
+<sc-if value="{{showSeeds}}" hint-placeholder-val="{{ true }}">
+<div style="display: flex; flex-direction: column; gap: 14px">
+<p style="margin: 0; font-size: 20px; font-weight: 700; color: #FFB347">What did your customers just tell you?</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<sc-for list="{{seeds}}" as="s" hint-placeholder-count="3">
+<button type="button" onClick="{{s.pick}}" style="font-family: inherit; font-size: 17px; font-weight: 700; padding: 12px 18px; min-height: 48px; border-radius: 12px; border: 2px solid #FFB347; background: transparent; color: #FFF1DC; cursor: pointer">{{s.label}}</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-for list="{{log}}" as="line" hint-placeholder-count="2">
+<div style="display: flex; gap: 14px; align-items: baseline">
+<span aria-hidden="true" style="flex: none; width: 10px; height: 10px; border-radius: {{line.shape}}; background: {{line.color}}; transform: translateY(1px)"></span>
+<span style="color: {{line.ink}}">{{line.text}}</span>
+</div>
+</sc-for>
+
+<sc-if value="{{showCheck1}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px; padding: 18px; border-radius: 14px; background: #2A2350; border: 1px solid #FFB347">
+<p style="margin: 0; font-weight: 700; color: #FFB347">Your call: which job matters most?</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<sc-for list="{{options}}" as="o" hint-placeholder-count="2">
+<button type="button" onClick="{{o.pick}}" style="font-family: inherit; font-size: 17px; font-weight: 700; padding: 12px 18px; min-height: 48px; border-radius: 12px; border: none; background: #FFB347; color: #1A0E08; cursor: pointer">{{o.label}}</button>
+</sc-for>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{showCheck2}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-direction: column; gap: 12px; padding: 18px; border-radius: 14px; background: #2A2350; border: 1px solid #FFB347">
+<p style="margin: 0; font-weight: 700; color: #FFB347">Your call: send the proof to the customers who raised it?</p>
+<div style="display: flex; flex-wrap: wrap; gap: 10px">
+<button type="button" onClick="{{send}}" style="font-family: inherit; font-size: 17px; font-weight: 700; padding: 12px 18px; min-height: 48px; border-radius: 12px; border: none; background: #FFB347; color: #1A0E08; cursor: pointer">Send it to them</button>
+<button type="button" onClick="{{hold}}" style="font-family: inherit; font-size: 17px; font-weight: 700; padding: 12px 18px; min-height: 48px; border-radius: 12px; border: 2px solid #FFB347; background: transparent; color: #FFF1DC; cursor: pointer">Not yet</button>
+</div>
+</div>
+</sc-if>
+
+<sc-if value="{{showEnd}}" hint-placeholder-val="{{ false }}">
+<div style="display: flex; flex-wrap: wrap; gap: 12px 20px; align-items: center; padding-top: 6px">
+<a href="https://calendly.com/aianvil/ai-anvil-consultation" onClick="{{openBooking}}" style="text-decoration: none; background: #FF6A3D; color: #1A0E08; font-weight: 700; padding: 14px 22px; border-radius: 12px; min-height: 50px; box-sizing: border-box; display: inline-flex; align-items: center">Run this on your product</a>
+<button type="button" onClick="{{reset}}" style="font-family: inherit; font-size: 17px; font-weight: 500; padding: 12px 6px; min-height: 48px; border: none; background: transparent; color: #B4ADD6; text-decoration: underline; cursor: pointer">Start over</button>
+</div>
+</sc-if>
+</div>
+
+<div style="flex: 1 1 360px; min-width: 0; padding: 28px; background: #221D45; display: flex; flex-direction: column; gap: 14px">
+<p style="margin: 0; font-size: 15px; font-weight: 700; color: #B4ADD6">The proof, inside your app</p>
+<div style="background: #F3F0FF; color: #13102A; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; min-height: 290px">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 12px; padding: 12px 16px; background: #DCD7F0">
+<span style="font-size: 14px; font-weight: 700">Your app</span>
+<span style="font-size: 13px; font-weight: 700; padding: 4px 10px; border-radius: 999px; background: {{statusBg}}; color: {{statusInk}}">{{status}}</span>
+</div>
+<div style="padding: 18px 16px; display: flex; flex-direction: column; gap: 10px; flex-grow: 1">
+<div aria-hidden="true" style="height: 11px; width: 60%; border-radius: 6px; background: #CFC9E6"></div>
+<div aria-hidden="true" style="height: 11px; width: 85%; border-radius: 6px; background: #CFC9E6"></div>
+<div style="margin-top: 8px; padding: 14px; border-radius: 10px; border: 2px dashed {{newBorder}}; background: {{newBg}}; display: flex; flex-direction: column; gap: 6px">
+<span style="font-size: 13px; font-weight: 700; color: #8A3A12">{{newTag}}</span>
+<span style="font-size: 18px; font-weight: 800; letter-spacing: -0.01em">{{previewTitle}}</span>
+</div>
+<div aria-hidden="true" style="height: 11px; width: 70%; border-radius: 6px; background: #CFC9E6"></div>
+<p style="margin: auto 0 0; padding-top: 12px; font-size: 15px; color: #4A4370">{{previewNote}}</p>
+</div>
+</div>
+<p style="margin: 0; font-size: 14px; color: #B4ADD6">An illustration of how I work. The scenarios are made up.</p>
+</div>
+</div>
+</div>
+</section>
+
+<section aria-labelledby="built-title" style="max-width: 1240px; margin: 0 auto; padding: 48px 24px 0">
+<div style="border-top: 1px solid #2F2A52; border-bottom: 1px solid #2F2A52; padding: 26px 0; display: flex; flex-wrap: wrap; gap: 8px 28px; align-items: baseline">
+<h2 id="built-title" style="margin: 0; font-size: 17px; font-weight: 700; color: #B4ADD6">Where I've built</h2>
+<p style="margin: 0; font-size: 22px; font-weight: 500">G-P, Atomic, Portico (CourseKey), Rosalyn.ai and The VL Studios.</p>
+</div>
+</section>
+
+<section id="work" aria-labelledby="work-title" style="max-width: 1240px; margin: 0 auto; padding: 112px 24px 48px; display: flex; flex-direction: column; gap: 56px">
+<h2 id="work-title" style="margin: 0; font-weight: 800; font-size: clamp(40px, 5vw, 68px); line-height: 1; letter-spacing: -0.03em">Off the anvil</h2>
+
+<article id="open-source" style="display: flex; flex-wrap: wrap; gap: 40px 56px; align-items: center">
+<div style="flex: 1 1 360px; min-width: 0; display: flex; flex-direction: column; gap: 16px">
+<p style="margin: 0; font-size: 16px; font-weight: 700; color: #FFB347">Shipped, open source</p>
+<h3 style="margin: 0; font-weight: 800; font-size: 44px; line-height: 1.02; letter-spacing: -0.03em">Perfect Placement</h3>
+<p style="margin: 0; max-width: 46ch; color: #D9D4F2">Your job search, run by your agents, on your machine. It finds roles, scores fit, tailors materials and drafts outreach. It never sends or submits without you.</p>
+<a href="https://github.com/askoulwassim/perfect-placement" style="align-self: flex-start; text-decoration: none; background: #FFB347; color: #1A0E08; font-weight: 700; padding: 14px 22px; border-radius: 12px; min-height: 48px; box-sizing: border-box; display: inline-flex; align-items: center">Try it on GitHub</a>
+</div>
+<div style="flex: 999 1 520px; min-width: 0">
+<img src="/_blob/ec8eb7da03d8c9820bd3102c51d0d7cc" alt="A 20-second tour of Perfect Placement on demo data: Now, Needs you, River, a role, People, You and Settings" style="display: block; width: 100%; height: auto; border-radius: 16px; border: 1px solid #3A3466">
+</div>
+</article>
+
+<div style="display: flex; flex-direction: column">
+<article style="display: flex; flex-wrap: wrap; gap: 12px 48px; padding: 32px 0; border-top: 1px solid #2F2A52">
+<div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0; font-weight: 800; font-size: 32px; letter-spacing: -0.02em">Specdr</h3>
+<p style="margin: 0; font-size: 16px; font-weight: 700; color: #B8AAFF">Ongoing, with the Specdr team</p>
+</div>
+<div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+<p style="margin: 0; max-width: 62ch; color: #D9D4F2">What comes after agile, for products that already exist. Proof-driven development: prove the problem, prove the solution, prove the impact. Customer signal becomes a working proof inside the real product, goes back to the customers who asked for it, and reaches engineering as evidence instead of a ticket.</p>
+<a href="https://specdr.ai" style="font-weight: 700">Read more at specdr.ai</a>
+</div>
+</article>
+<article style="display: flex; flex-wrap: wrap; gap: 12px 48px; padding: 32px 0; border-top: 1px solid #2F2A52">
+<div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0; font-weight: 800; font-size: 32px; letter-spacing: -0.02em">RIP'D</h3>
+<p style="margin: 0; font-size: 16px; font-weight: 700; color: #FFB347">Shipped</p>
+</div>
+<div style="flex: 999 1 520px; min-width: 0; display: flex; flex-direction: column; gap: 12px">
+<p style="margin: 0; max-width: 62ch; color: #D9D4F2">A trading card platform for collectors, with computer vision and AI-assisted grading. 40 organic daily users within three months of launch.</p>
+<a href="#work" style="font-weight: 700">Read the case study</a>
+</div>
+</article>
+<article style="display: flex; flex-wrap: wrap; gap: 12px 48px; padding: 32px 0; border-top: 1px solid #2F2A52; border-bottom: 1px solid #2F2A52">
+<div style="flex: 1 1 260px; display: flex; flex-direction: column; gap: 6px">
+<h3 style="margin: 0; font-weight: 800; font-size: 32px; letter-spacing: -0.02em">Pandora</h3>
+<p style="margin: 0; font-size: 16px; font-weight: 700; color: #7AA2FF">In the forge</p>
+</div>
+<div style="flex: 999 1 520px; min-width: 0">
+<p style="margin: 0; max-width: 62ch; color: #D9D4F2">A self-hosted second brain: a personal context layer with curated agents on top. Open source is on the roadmap.</p>
+</div>
+</article>
+</div>
+</section>
+
+<section id="services" aria-labelledby="services-title" style="max-width: 1240px; margin: 0 auto; padding: 112px 24px; display: flex; flex-direction: column; gap: 48px">
+<div style="display: flex; flex-wrap: wrap; gap: 24px 72px; align-items: flex-end">
+<h2 id="services-title" style="margin: 0; flex: 999 1 520px; font-weight: 800; font-size: clamp(40px, 5vw, 68px); line-height: 1; letter-spacing: -0.03em">Have a product? Let's make it better.</h2>
+<p style="margin: 0; flex: 1 1 320px; color: #D9D4F2">I start from what you have. Early-stage, growth or enterprise, the work happens inside your product and alongside your team, so they can keep running it after I'm gone.</p>
+</div>
+<div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 40px">
+<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 4px solid #B8AAFF">
+<h3 style="margin: 0; font-weight: 800; font-size: 26px">Proof Sprint</h3>
+<p style="margin: 0; color: #D9D4F2">One week inside your product: prove the problem, then put a working solution in front of the customers who raised it.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-top: 4px solid #FFB347">
+<h3 style="margin: 0; font-weight: 800; font-size: 26px">AI Product Foundations</h3>
+<p style="margin: 0; color: #D9D4F2">The evals, retrieval and data layer your existing product needs to ship AI features that hold up.</p>
+</div>
+<div style="display: flex; flex-direction: column; gap: 12px; padding-top: 20px; border-image: linear-gradient(90deg, #7AA2FF, #B8AAFF, #FFB347, #FF6A3D) 1; border-top: 4px solid">
+<h3 style="margin: 0; font-weight: 800; font-size: 26px">Fractional AI PM</h3>
+<p style="margin: 0; color: #D9D4F2">A player-coach on your team, running the loop on your product and teaching your team to run it without me.</p>
+</div>
+</div>
+<p style="margin: 0; max-width: 72ch; color: #B4ADD6">Founding PM at Atomic, where we raised an $800K pre-seed. Principal PM for the data and AI platform at G-P. Advised three early-stage AI startups; two raised over $3M.</p>
+<div style="display: flex; flex-wrap: wrap; gap: 16px 32px; align-items: center">
+<a href="https://calendly.com/aianvil/ai-anvil-consultation" onClick="{{openBooking}}" style="text-decoration: none; background: #FF6A3D; color: #1A0E08; font-weight: 700; padding: 16px 28px; border-radius: 12px; min-height: 54px; box-sizing: border-box; display: inline-flex; align-items: center">Book an AI Readiness Chat</a>
+<span style="font-size: 17px; color: #B4ADD6">Moving a whole engineering org to spec-driven delivery? That's <a href="https://specdr.ai">Specdr</a>.</span>
+</div>
+</section>
+
+<section aria-labelledby="writing-title" style="background: #1B1738">
+<div style="max-width: 1240px; margin: 0 auto; padding: 88px 24px; display: flex; flex-wrap: wrap; gap: 28px; align-items: center; justify-content: space-between">
+<div style="flex: 999 1 460px; min-width: 0; display: flex; flex-direction: column; gap: 10px">
+<h2 id="writing-title" style="margin: 0; font-weight: 800; font-size: 44px; letter-spacing: -0.03em">Notes from the forge</h2>
+<p style="margin: 0; color: #D9D4F2">What I'm learning while building with agents. On Substack.</p>
+</div>
+<a href="https://aianvil.substack.com/subscribe" style="text-decoration: none; border: 1.5px solid #B8AAFF; color: #F3F0FF; font-weight: 700; padding: 14px 22px; border-radius: 12px; min-height: 50px; box-sizing: border-box; display: inline-flex; align-items: center">Subscribe on Substack</a>
+</div>
+</section>
+
+<footer id="about" style="max-width: 1240px; margin: 0 auto; padding: 88px 24px 48px; display: flex; flex-direction: column; gap: 48px">
+<p style="margin: 0; display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 40px; font-weight: 800; font-size: clamp(36px, 5.4vw, 72px); line-height: 1.1; letter-spacing: -0.03em">
+<span lang="en">Anvil</span>
+<span lang="ar" dir="rtl" style="font-family: 'Noto Kufi Arabic', sans-serif; font-weight: 500; letter-spacing: 0; color: #B8AAFF">سندان</span>
+<span lang="es" style="color: #FFB347">Yunque</span>
+<span lang="no" style="color: #FF6A3D">Ambolt</span>
+</p>
+<div style="display: flex; flex-wrap: wrap; gap: 40px; justify-content: space-between; border-top: 1px solid #2F2A52; padding-top: 32px">
+<div style="flex: 999 1 420px; min-width: 0; display: flex; flex-direction: column; gap: 8px">
+<p style="margin: 0; display: flex; align-items: center; flex-wrap: wrap; gap: 10px; font-weight: 800; font-size: 22px"><img src="/_blob/ab9584ad43cf732fec16b7d473c90f6b" alt="" style="height: 28px; width: auto; display: block">AI Anvil <span style="font-weight: 400; font-size: 16px; color: #B4ADD6">by Wassim Askoul</span></p>
+<p style="margin: 0; max-width: 52ch; font-size: 16px; color: #D9D4F2">AI Anvil started in 2024 as an AI-literacy hub for educators. It grew into a studio where I build and ship AI-native tools in the open.</p>
+</div>
+<nav aria-label="Elsewhere" style="display: flex; flex-wrap: wrap; gap: 12px; align-items: center">
+<a href="https://www.linkedin.com/in/askoulwassim/" aria-label="LinkedIn" title="LinkedIn" style="width: 48px; height: 48px; box-sizing: border-box; border-radius: 12px; border: 1.5px solid #2F2A52; display: inline-flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="7" width="18" height="13" rx="2"></rect><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path></svg></a>
+<a href="https://github.com/askoulwassim" aria-label="GitHub" title="GitHub" style="width: 48px; height: 48px; box-sizing: border-box; border-radius: 12px; border: 1.5px solid #2F2A52; display: inline-flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><path d="M8 6l-6 6 6 6M16 6l6 6-6 6"></path></svg></a>
+<a href="https://aianvil.substack.com" aria-label="Substack" title="Substack" style="width: 48px; height: 48px; box-sizing: border-box; border-radius: 12px; border: 1.5px solid #2F2A52; display: inline-flex; align-items: center; justify-content: center"><svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"></rect><path d="M3 7l9 6 9-6"></path></svg></a>
+</nav>
+</div>
+<p style="margin: 0; font-size: 14px; color: #B4ADD6">© 2026 AI Anvil</p>
+</footer>
+
+<sc-if value="{{bookingOpen}}" hint-placeholder-val="{{ false }}">
+<div style="position: fixed; inset: 0; z-index: 50; background: rgba(8, 6, 22, 0.78); display: flex; align-items: center; justify-content: center; padding: 24px">
+<div role="dialog" aria-modal="true" aria-labelledby="booking-title" style="width: min(720px, 100%); max-height: calc(100vh - 48px); background: #1B1738; border: 1px solid #3A3466; border-radius: 20px; display: flex; flex-direction: column; overflow: hidden">
+<div style="display: flex; align-items: center; justify-content: space-between; gap: 16px; padding: 18px 22px; border-bottom: 1px solid #2F2A52">
+<h2 id="booking-title" style="margin: 0; font-weight: 800; font-size: 22px; letter-spacing: -0.02em">Book an AI Readiness Chat</h2>
+<button type="button" onClick="{{closeBooking}}" aria-label="Close" style="width: 44px; height: 44px; border-radius: 12px; border: 1.5px solid #2F2A52; background: transparent; color: #F3F0FF; cursor: pointer; font-family: inherit; font-size: 22px; line-height: 1">×</button>
+</div>
+<div style="flex-grow: 1; min-height: 460px; margin: 18px; border-radius: 14px; border: 2px dashed #3A3466; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 8px; padding: 24px; text-align: center">
+<p style="margin: 0; font-weight: 700; color: #D9D4F2">Calendly scheduling opens here, inside the page.</p>
+<p style="margin: 0; font-size: 15px; color: #B4ADD6">calendly.com/aianvil/ai-anvil-consultation</p>
+</div>
+</div>
+</div>
+</sc-if>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props='{"$preview":{"width":1440,"height":3800}}'>
+class Component extends DCLogic {
+constructor(props) {
+super(props);
+this.state = { seed: null, step: 0, choice: null, outcome: null, bookingOpen: false };
+this.timers = [];
+}
+componentWillUnmount() {
+this.timers.forEach(function (t) { clearTimeout(t); });
+}
+later(fn, ms) {
+this.timers.push(setTimeout(fn, ms));
+}
+renderVals() {
+const SEEDS = {
+complaint: { label: 'A support ticket', quote: '“Exporting our weekly report takes 20 minutes, every Friday.”', signal: 'Problem proof: team leads repeat a manual export from your reporting screen every week.', options: ['One-click export from the report', 'The report, emailed on a schedule'] },
+deal: { label: 'A lost-deal note', quote: '“They liked us, but setup took five calls.”', signal: 'Problem proof: setup in your app depends on calls. Buyers want to do it themselves.', options: ['Guided setup inside the app', 'A setup checklist on the home screen'] },
+calls: { label: 'Customer call notes', quote: '“Three customers asked to approve requests from their phones.”', signal: 'Problem proof: approvals in your app stall when approvers are away from a desk.', options: ['A mobile approve screen', 'Approve straight from the email'] }
+};
+const agent = { color: '#7AA2FF', shape: '50%', ink: '#E6ECFF' };
+const you = { color: '#FFB347', shape: '3px', ink: '#FFF1DC' };
+const s = this.state;
+const seed = s.seed ? SEEDS[s.seed] : null;
+const log = [];
+if (seed) {
+log.push(Object.assign({ text: 'Customers: ' + seed.quote }, you));
+log.push(Object.assign({ text: 'Agent: reading it against your product, its screens, data and design system…' }, agent));
+}
+if (seed && s.step >= 2) log.push(Object.assign({ text: seed.signal }, agent));
+if (s.choice) log.push(Object.assign({ text: 'You chose: ' + s.choice + '.' }, you));
+if (s.step >= 3) log.push(Object.assign({ text: 'Agent: brief drafted against your existing app. One job, one screen. Success means they stop asking.' }, agent));
+if (s.step >= 4) log.push(Object.assign({ text: 'Agent: building the proof inside your app, in your UI, at a shareable link…' }, agent));
+if (s.step >= 5) log.push(Object.assign({ text: 'Agent: solution proof is live in your app. Waiting on you.' }, agent));
+if (s.outcome === 'sent') log.push(Object.assign({ text: 'You sent it to the customers who raised it. Their feedback hardens the solution proof, engineering gets evidence instead of a ticket, and the impact proof is read from your metric once it ships.' }, you));
+if (s.outcome === 'held') log.push(Object.assign({ text: 'You held it. The agents keep iterating until you say go.' }, you));
+
+const statusMap = {
+0: ['Waiting', '#E7E3F7', '#4A4370'], 1: ['Reading', '#DCE6FF', '#2847A8'], 2: ['Your call', '#FFE7C2', '#7A4300'],
+3: ['Drafting', '#DCE6FF', '#2847A8'], 4: ['Building', '#DCE6FF', '#2847A8'], 5: ['Your call', '#FFE7C2', '#7A4300']
+};
+let st = statusMap[s.step] || statusMap[0];
+if (s.outcome === 'sent') st = ['Sent', '#FFD9CB', '#8A2A0C'];
+if (s.outcome === 'held') st = ['Held', '#E7E3F7', '#4A4370'];
+
+const sent = s.outcome === 'sent';
+const segDefs = [
+['Problem proof', '#7AA2FF', s.step >= 2 ? '#7AA2FF' : '#2F2A52', s.step >= 2],
+['Solution proof', '#B8AAFF', s.step >= 5 ? '#B8AAFF' : '#2F2A52', s.step >= 5],
+[sent ? 'Impact proof, once it ships' : 'Impact proof', '#FFB347', sent ? 'linear-gradient(90deg, #FFB347 50%, #2F2A52 50%)' : '#2F2A52', sent]
+];
+
+const self = this;
+return {
+bookingOpen: s.bookingOpen,
+openBooking: function (e) { if (e && e.preventDefault) e.preventDefault(); self.setState({ bookingOpen: true }); },
+closeBooking: function () { self.setState({ bookingOpen: false }); },
+segments: segDefs.map(function (d) {
+return { label: d[0], bar: d[2], ink: d[3] ? d[1] : '#8E87B3' };
+}),
+showSeeds: !seed,
+seeds: Object.keys(SEEDS).map(function (k) {
+return { label: SEEDS[k].label, pick: function () {
+self.setState({ seed: k, step: 1 });
+self.later(function () { self.setState({ step: 2 }); }, 1200);
+} };
+}),
+log: log,
+showCheck1: !!seed && s.step === 2 && !s.choice,
+options: seed ? seed.options.map(function (o) {
+return { label: o, pick: function () {
+self.setState({ choice: o, step: 3 });
+self.later(function () { self.setState({ step: 4 }); }, 1000);
+self.later(function () { self.setState({ step: 5 }); }, 2400);
+} };
+}) : [],
+showCheck2: s.step === 5 && !s.outcome,
+send: function () { self.setState({ outcome: 'sent' }); },
+hold: function () { self.setState({ outcome: 'held' }); },
+showEnd: !!s.outcome,
+reset: function () { self.timers.forEach(function (t) { clearTimeout(t); }); self.timers = []; self.setState({ seed: null, step: 0, choice: null, outcome: null, bookingOpen: false }); },
+previewTitle: s.choice || (seed ? 'Reading your product' : 'Your next improvement'),
+newTag: s.step >= 4 ? 'New, in your existing screen' : 'Coming soon to this screen',
+newBorder: s.step >= 4 ? '#FF6A3D' : '#B4ADD6',
+newBg: s.step >= 4 ? '#FFF1E8' : 'transparent',
+previewNote: s.step >= 4 ? 'A working proof in the product your customers already use.' : 'Pick what your customers said and watch the change land here.',
+status: st[0], statusBg: st[1], statusInk: st[2]
+};
+}
+}
+</script>
+</body>
+</html>

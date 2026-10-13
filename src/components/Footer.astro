@@ -1,0 +1,128 @@
+---
+import { siGithub, siSubstack } from 'simple-icons';
+import linkedinSvg from '../icons/linkedin.svg?raw';
+import Mark from './Mark.astro';
+import { GITHUB_URL, LINKEDIN_URL, SUBSTACK_URL } from '../data/links';
+
+// LinkedIn comes from LinkedIn's brand downloads page (Simple Icons no longer ships it).
+const linkedinPath = linkedinSvg.match(/<path[^>]*\/>/)?.[0] ?? '';
+
+const socials = [
+  { name: 'LinkedIn', href: LINKEDIN_URL, path: linkedinPath },
+  { name: 'GitHub', href: GITHUB_URL, path: `<path d="${siGithub.path}"/>` },
+  { name: 'Substack', href: SUBSTACK_URL, path: `<path d="${siSubstack.path}"/>` },
+];
+---
+
+<footer id="about" class="footer">
+  <p class="anvil">
+    <span lang="en">Anvil</span>
+    <span lang="ar" dir="rtl" class="ar">سندان</span>
+    <span lang="es" style="color: var(--amber)">Yunque</span>
+    <span lang="no" style="color: var(--molten)">Ambolt</span>
+  </p>
+  <div class="base">
+    <div class="about">
+      <p class="brand"><Mark height={28} />AI Anvil <span class="by">by Wassim Askoul</span></p>
+      <p class="story">AI Anvil started in 2024 as an AI-literacy hub for educators. It grew into a studio where I build and ship AI-native tools in the open.</p>
+    </div>
+    <nav aria-label="Elsewhere" class="social">
+      {
+        socials.map((s) => (
+          <a href={s.href} aria-label={s.name} title={s.name}>
+            <svg aria-hidden="true" width="22" height="22" viewBox="0 0 24 24" fill="currentColor" set:html={s.path} />
+          </a>
+        ))
+      }
+    </nav>
+  </div>
+  <p class="legal">© 2026 AI Anvil</p>
+</footer>
+
+<style>
+  .footer {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 88px 24px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 48px;
+  }
+  .anvil {
+    margin: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: baseline;
+    gap: 8px 40px;
+    font-weight: 800;
+    font-size: clamp(36px, 5.4vw, 72px);
+    line-height: 1.1;
+    letter-spacing: -0.03em;
+  }
+  .ar {
+    font-family: var(--font-ar);
+    font-weight: 500;
+    letter-spacing: 0;
+    color: var(--lilac);
+  }
+  .base {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px;
+    justify-content: space-between;
+    border-top: 1px solid var(--rule);
+    padding-top: 32px;
+  }
+  .about {
+    flex: 999 1 420px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .brand {
+    margin: 0;
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    font-weight: 800;
+    font-size: 22px;
+  }
+  .by {
+    font-weight: 400;
+    font-size: 16px;
+    color: var(--muted);
+  }
+  .story {
+    margin: 0;
+    max-width: 52ch;
+    font-size: 16px;
+    color: var(--ink-2);
+  }
+  .social {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+    align-items: center;
+  }
+  .social a {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    border: 1.5px solid var(--rule);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--ink);
+  }
+  .social a:hover,
+  .social a:focus-visible {
+    color: var(--amber);
+  }
+  .legal {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+</style>

@@ -1,0 +1,55 @@
+---
+import { SUBSTACK_SUBSCRIBE_URL } from '../data/links';
+---
+
+<section aria-labelledby="writing-title" class="writing">
+  <div class="inner">
+    <div class="copy">
+      <h2 id="writing-title">Notes from the forge</h2>
+      <p>What I'm learning while building with agents. On Substack.</p>
+    </div>
+    <a href={SUBSTACK_SUBSCRIBE_URL} class="btn subscribe">Subscribe on Substack</a>
+  </div>
+</section>
+
+<style>
+  .writing {
+    background: var(--surface);
+  }
+  .inner {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 88px 24px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 28px;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .copy {
+    flex: 999 1 460px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+  h2 {
+    margin: 0;
+    font-weight: 800;
+    font-size: 44px;
+    letter-spacing: -0.03em;
+  }
+  p {
+    margin: 0;
+    color: var(--ink-2);
+  }
+  .subscribe {
+    border: 1.5px solid var(--lilac);
+    color: var(--ink);
+    padding: 14px 22px;
+    min-height: 50px;
+  }
+  .subscribe:hover {
+    color: var(--amber);
+  }
+</style>

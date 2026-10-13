@@ -1,0 +1,197 @@
+---
+import { getImage } from 'astro:assets';
+import poster from '../assets/perfect-placement-demo-poster.png';
+import { PERFECT_PLACEMENT_URL, SPECDR_URL } from '../data/links';
+
+const posterImage = await getImage({ src: poster, format: 'webp', width: 1200 });
+const videoLabel =
+  'A 20-second tour of Perfect Placement on demo data: Now, Needs you, River, a role, People, You and Settings';
+---
+
+<section id="work" aria-labelledby="work-title" class="work">
+  <h2 id="work-title" class="section-title">Off the anvil</h2>
+
+  <article id="open-source" class="feature">
+    <div class="feature-copy">
+      <p class="kicker">Shipped, open source</p>
+      <h3>Perfect Placement</h3>
+      <p class="body">Your job search, run by your agents, on your machine. It finds roles, scores fit, tailors materials and drafts outreach. It never sends or submits without you.</p>
+      <a href={PERFECT_PLACEMENT_URL} class="btn btn-amber try">Try it on GitHub</a>
+    </div>
+    <div class="feature-media">
+      <video
+        id="pp-demo"
+        autoplay
+        muted
+        loop
+        playsinline
+        preload="metadata"
+        poster={posterImage.src}
+        width="1200"
+        height="750"
+        aria-label={videoLabel}
+      >
+        <source src="/media/perfect-placement-demo.webm" type="video/webm" />
+        <source src="/media/perfect-placement-demo.mp4" type="video/mp4" />
+      </video>
+      <script is:inline>
+        // Reduced motion: show the poster frame instead of autoplaying.
+        (function () {
+          var v = document.getElementById('pp-demo');
+          if (v && window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+            v.removeAttribute('autoplay');
+            v.pause();
+            v.controls = true;
+          }
+        })();
+      </script>
+    </div>
+  </article>
+
+  <div class="rows">
+    <article class="row">
+      <div class="row-head">
+        <h3>Specdr</h3>
+        <p class="status" style="color: var(--lilac)">Ongoing, with the Specdr team</p>
+      </div>
+      <div class="row-body">
+        <p>What comes after agile, for products that already exist. Proof-driven development: prove the problem, prove the solution, prove the impact. Customer signal becomes a working proof inside the real product, goes back to the customers who asked for it, and reaches engineering as evidence instead of a ticket.</p>
+        <a href={SPECDR_URL} class="row-link">Read more at specdr.ai</a>
+      </div>
+    </article>
+    <article class="row">
+      <div class="row-head">
+        <h3>RIP'D</h3>
+        <p class="status" style="color: var(--amber)">Shipped</p>
+      </div>
+      <div class="row-body">
+        <p>A trading card platform for collectors, with computer vision and AI-assisted grading. 40 organic daily users within three months of launch.</p>
+        <!-- TODO: link RIP'D case study -->
+        <span class="row-link row-link-pending">Read the case study</span>
+      </div>
+    </article>
+    <article class="row row-last">
+      <div class="row-head">
+        <h3>Pandora</h3>
+        <p class="status" style="color: var(--cold)">In the forge</p>
+      </div>
+      <div class="row-body">
+        <p>A self-hosted second brain: a personal context layer with curated agents on top. Open source is on the roadmap.</p>
+      </div>
+    </article>
+  </div>
+</section>
+
+<style>
+  .work {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 112px 24px 48px;
+    display: flex;
+    flex-direction: column;
+    gap: 56px;
+  }
+  .section-title {
+    margin: 0;
+    font-weight: 800;
+    font-size: clamp(40px, 5vw, 68px);
+    line-height: 1;
+    letter-spacing: -0.03em;
+  }
+  .feature {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 40px 56px;
+    align-items: center;
+  }
+  .feature-copy {
+    flex: 1 1 360px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+  .kicker {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: var(--amber);
+  }
+  .feature h3 {
+    margin: 0;
+    font-weight: 800;
+    font-size: 44px;
+    line-height: 1.02;
+    letter-spacing: -0.03em;
+  }
+  .body {
+    margin: 0;
+    max-width: 46ch;
+    color: var(--ink-2);
+  }
+  .try {
+    align-self: flex-start;
+    padding: 14px 22px;
+    min-height: 48px;
+  }
+  .feature-media {
+    flex: 999 1 520px;
+    min-width: 0;
+  }
+  video {
+    display: block;
+    width: 100%;
+    height: auto;
+    border-radius: 16px;
+    border: 1px solid var(--rule-2);
+  }
+  .rows {
+    display: flex;
+    flex-direction: column;
+  }
+  .row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 48px;
+    padding: 32px 0;
+    border-top: 1px solid var(--rule);
+  }
+  .row-last {
+    border-bottom: 1px solid var(--rule);
+  }
+  .row-head {
+    flex: 1 1 260px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .row h3 {
+    margin: 0;
+    font-weight: 800;
+    font-size: 32px;
+    letter-spacing: -0.02em;
+  }
+  .status {
+    margin: 0;
+    font-size: 16px;
+    font-weight: 700;
+  }
+  .row-body {
+    flex: 999 1 520px;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+  .row-body p {
+    margin: 0;
+    max-width: 62ch;
+    color: var(--ink-2);
+  }
+  .row-link {
+    font-weight: 700;
+  }
+  .row-link-pending {
+    color: var(--muted);
+  }
+</style>

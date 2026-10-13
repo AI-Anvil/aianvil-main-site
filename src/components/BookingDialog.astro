@@ -1,0 +1,132 @@
+---
+import { BOOKING_EMBED_URL } from '../data/links';
+---
+
+<!--
+  The booking dialog from design F. Every `a[data-booking]` opens it; the Google Calendar
+  booking page loads into the iframe on first open. Without JS (or <dialog>) the link just navigates.
+-->
+<dialog class="booking" aria-labelledby="booking-title" data-booking-dialog>
+  <div class="bar">
+    <h2 id="booking-title">Book an AI Readiness Chat</h2>
+    <button type="button" class="close" aria-label="Close" data-booking-close>×</button>
+  </div>
+  <div class="frame">
+    <iframe title="Book an AI Readiness Chat" data-src={BOOKING_EMBED_URL}></iframe>
+  </div>
+</dialog>
+
+<script>
+  const dialog = document.querySelector<HTMLDialogElement>('[data-booking-dialog]');
+
+  if (dialog && typeof dialog.showModal === 'function') {
+    const iframe = dialog.querySelector('iframe')!;
+    let opener: HTMLElement | null = null;
+
+    const open = () => {
+      if (!iframe.src) iframe.src = iframe.dataset.src!;
+      opener = document.activeElement as HTMLElement | null;
+      dialog.showModal();
+    };
+
+    document.addEventListener('click', (event) => {
+      const link = (event.target as Element | null)?.closest<HTMLAnchorElement>('a[data-booking]');
+      if (!link) return;
+      if (event.metaKey || event.ctrlKey || event.shiftKey || event.altKey || event.button !== 0) return;
+      event.preventDefault();
+      open();
+    });
+
+    dialog.querySelector('[data-booking-close]')!.addEventListener('click', () => dialog.close());
+
+    // Clicking the dimmed backdrop (the dialog element itself, outside its content) closes it.
+    dialog.addEventListener('click', (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+
+    dialog.addEventListener('close', () => opener?.focus());
+  }
+</script>
+
+<style>
+  .booking {
+    width: min(720px, calc(100% - 48px));
+    height: min(820px, calc(100dvh - 48px));
+    max-width: none;
+    max-height: none;
+    margin: auto;
+    padding: 0;
+    background: var(--surface);
+    color: var(--ink);
+    border: 1px solid var(--rule-2);
+    border-radius: 20px;
+    overflow: hidden;
+  }
+  .booking[open] {
+    display: flex;
+    flex-direction: column;
+  }
+  .booking::backdrop {
+    background: rgba(8, 6, 22, 0.78);
+  }
+  .bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 22px;
+    border-bottom: 1px solid var(--rule);
+  }
+  h2 {
+    margin: 0;
+    font-weight: 800;
+    font-size: 22px;
+    letter-spacing: -0.02em;
+  }
+  .close {
+    flex: none;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    border: 1.5px solid var(--rule);
+    background: transparent;
+    color: var(--ink);
+    cursor: pointer;
+    font-family: inherit;
+    font-size: 22px;
+    line-height: 1;
+  }
+  .close:hover {
+    color: var(--amber);
+  }
+  .frame {
+    flex-grow: 1;
+    min-height: 0;
+    margin: 18px;
+    border-radius: 14px;
+    overflow: hidden;
+    background: #FFFFFF;
+  }
+  iframe {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+  /* Phones: give the booking page as much room as possible. */
+  @media (max-width: 480px) {
+    .booking {
+      width: calc(100% - 24px);
+      height: calc(100dvh - 24px);
+    }
+    .bar {
+      padding: 14px 16px;
+    }
+    .frame {
+      margin: 12px;
+    }
+  }
+  :global(html:has(.booking[open])) {
+    overflow: hidden;
+  }
+</style>

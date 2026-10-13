@@ -1,0 +1,539 @@
+---
+import { SEEDS } from '../data/seeds';
+import { BOOKING_URL } from '../data/links';
+
+// Initial state (step 0) is rendered here; the script below runs the loop.
+const segments = ['Problem proof', 'Solution proof', 'Impact proof'];
+---
+
+<section aria-label="Try the loop on an existing product" class="console-section">
+  <div class="console" data-console>
+    <div aria-hidden="true" class="strip">
+      {
+        segments.map((label) => (
+          <div class="seg" data-seg>
+            <div class="seg-bar" />
+            <span class="seg-label">{label}</span>
+          </div>
+        ))
+      }
+    </div>
+
+    <div class="cols">
+      <div class="main">
+        <div class="legend">
+          <span class="key"><span aria-hidden="true" class="dot dot-agent"></span>Agent carries</span>
+          <span class="key"><span aria-hidden="true" class="dot dot-you"></span>You decide</span>
+          <span class="where">Working in: your existing product</span>
+        </div>
+
+        <div class="seeds" data-seeds>
+          <p class="ask">What did your customers just tell you?</p>
+          <div class="buttons">
+            {
+              Object.entries(SEEDS).map(([key, seed]) => (
+                <button type="button" class="choice choice-outline" data-seed={key}>
+                  {seed.label}
+                </button>
+              ))
+            }
+          </div>
+        </div>
+
+        <div class="log" aria-live="polite" tabindex="-1" data-log></div>
+
+        <div class="panel" data-check1 hidden>
+          <p class="panel-title">Your call: which job matters most?</p>
+          <div class="buttons" data-options></div>
+        </div>
+
+        <div class="panel" data-check2 hidden>
+          <p class="panel-title">Your call: send the proof to the customers who raised it?</p>
+          <div class="buttons">
+            <button type="button" class="choice choice-solid" data-send>Send it to them</button>
+            <button type="button" class="choice choice-outline" data-hold>Not yet</button>
+          </div>
+        </div>
+
+        <div class="end" data-end hidden>
+          <a href={BOOKING_URL} data-booking class="btn btn-molten run">Run this on your product</a>
+          <button type="button" class="reset" data-reset>Start over</button>
+        </div>
+
+        <noscript>
+          <div class="end">
+            <a href={BOOKING_URL} class="btn btn-molten run">Run this on your product</a>
+          </div>
+        </noscript>
+      </div>
+
+      <div class="proof">
+        <p class="proof-label">The proof, inside your app</p>
+        <div class="app">
+          <div class="app-bar">
+            <span class="app-name">Your app</span>
+            <span class="pill" data-status>Waiting</span>
+          </div>
+          <div class="app-body">
+            <div aria-hidden="true" class="ghost" style="width: 60%"></div>
+            <div aria-hidden="true" class="ghost" style="width: 85%"></div>
+            <div class="new" data-new>
+              <span class="new-tag" data-new-tag>Coming soon to this screen</span>
+              <span class="new-title" data-preview-title>Your next improvement</span>
+            </div>
+            <div aria-hidden="true" class="ghost" style="width: 70%"></div>
+            <p class="note" data-preview-note>Pick what your customers said and watch the change land here.</p>
+          </div>
+        </div>
+        <p class="disclaimer">An illustration of how I work. The scenarios are made up.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { SEEDS, type SeedKey } from '../data/seeds';
+
+  type Outcome = 'sent' | 'held' | null;
+  interface State {
+    seed: SeedKey | null;
+    step: number;
+    choice: string | null;
+    outcome: Outcome;
+  }
+  interface Line {
+    text: string;
+    who: 'agent' | 'you';
+  }
+
+  const STATUS: Record<number, [string, string, string]> = {
+    0: ['Waiting', '#E7E3F7', '#4A4370'],
+    1: ['Reading', '#DCE6FF', '#2847A8'],
+    2: ['Your call', '#FFE7C2', '#7A4300'],
+    3: ['Drafting', '#DCE6FF', '#2847A8'],
+    4: ['Building', '#DCE6FF', '#2847A8'],
+    5: ['Your call', '#FFE7C2', '#7A4300'],
+  };
+  const SENT: [string, string, string] = ['Sent', '#FFD9CB', '#8A2A0C'];
+  const HELD: [string, string, string] = ['Held', '#E7E3F7', '#4A4370'];
+  const IDLE_BAR = '#2F2A52';
+  const IDLE_INK = '#8E87B3';
+
+  const root = document.querySelector<HTMLElement>('[data-console]');
+  if (root) initConsole(root);
+
+  function initConsole(root: HTMLElement) {
+    const $ = <T extends HTMLElement = HTMLElement>(sel: string) => root.querySelector<T>(sel)!;
+    const segs = Array.from(root.querySelectorAll<HTMLElement>('[data-seg]'));
+    const seedsEl = $('[data-seeds]');
+    const logEl = $('[data-log]');
+    const check1 = $('[data-check1]');
+    const optionsEl = $('[data-options]');
+    const check2 = $('[data-check2]');
+    const endEl = $('[data-end]');
+    const statusEl = $('[data-status]');
+    const newEl = $('[data-new]');
+    const newTag = $('[data-new-tag]');
+    const previewTitle = $('[data-preview-title]');
+    const previewNote = $('[data-preview-note]');
+
+    const initial: State = { seed: null, step: 0, choice: null, outcome: null };
+    let state: State = { ...initial };
+    let timers: number[] = [];
+    let rendered = 0;
+
+    const later = (fn: () => void, ms: number) => {
+      timers.push(window.setTimeout(fn, ms));
+    };
+
+    const set = (patch: Partial<State>) => {
+      state = { ...state, ...patch };
+      render();
+    };
+
+    const isVisible = (el: HTMLElement) => el.getClientRects().length > 0;
+
+    function lines(s: State): Line[] {
+      const seed = s.seed ? SEEDS[s.seed] : null;
+      const out: Line[] = [];
+      if (seed) {
+        out.push({ text: 'Customers: ' + seed.quote, who: 'you' });
+        out.push({ text: 'Agent: reading it against your product, its screens, data and design system…', who: 'agent' });
+      }
+      if (seed && s.step >= 2) out.push({ text: seed.signal, who: 'agent' });
+      if (s.choice) out.push({ text: 'You chose: ' + s.choice + '.', who: 'you' });
+      if (s.step >= 3) out.push({ text: 'Agent: brief drafted against your existing app. One job, one screen. Success means they stop asking.', who: 'agent' });
+      if (s.step >= 4) out.push({ text: 'Agent: building the proof inside your app, in your UI, at a shareable link…', who: 'agent' });
+      if (s.step >= 5) out.push({ text: 'Agent: solution proof is live in your app. Waiting on you.', who: 'agent' });
+      if (s.outcome === 'sent') out.push({ text: 'You sent it to the customers who raised it. Their feedback hardens the solution proof, engineering gets evidence instead of a ticket, and the impact proof is read from your metric once it ships.', who: 'you' });
+      if (s.outcome === 'held') out.push({ text: 'You held it. The agents keep iterating until you say go.', who: 'you' });
+      return out;
+    }
+
+    function lineEl(line: Line) {
+      const row = document.createElement('div');
+      row.className = 'line line-' + line.who;
+      const dot = document.createElement('span');
+      dot.setAttribute('aria-hidden', 'true');
+      dot.className = 'line-dot';
+      const text = document.createElement('span');
+      text.className = 'line-text';
+      text.textContent = line.text;
+      row.append(dot, text);
+      return row;
+    }
+
+    function render() {
+      const s = state;
+      const seed = s.seed ? SEEDS[s.seed] : null;
+      // Keyboard focus sits on a control that is about to be hidden; move it somewhere sensible after rendering.
+      const focusWasInside = root.contains(document.activeElement) && document.activeElement !== logEl;
+
+      // Progress strip
+      const sent = s.outcome === 'sent';
+      const segState: [string, string, string, boolean][] = [
+        ['Problem proof', '#7AA2FF', s.step >= 2 ? '#7AA2FF' : IDLE_BAR, s.step >= 2],
+        ['Solution proof', '#B8AAFF', s.step >= 5 ? '#B8AAFF' : IDLE_BAR, s.step >= 5],
+        [sent ? 'Impact proof, once it ships' : 'Impact proof', '#FFB347', sent ? 'linear-gradient(90deg, #FFB347 50%, #2F2A52 50%)' : IDLE_BAR, sent],
+      ];
+      segs.forEach((el, i) => {
+        const [label, ink, bar, lit] = segState[i];
+        el.querySelector<HTMLElement>('.seg-bar')!.style.background = bar;
+        const labelEl = el.querySelector<HTMLElement>('.seg-label')!;
+        labelEl.textContent = label;
+        labelEl.style.color = lit ? ink : IDLE_INK;
+      });
+
+      // Seeds
+      seedsEl.hidden = !!seed;
+
+      // Log: lines only ever append within a run, so add the new ones and let aria-live announce them.
+      const all = lines(s);
+      if (all.length < rendered) {
+        logEl.replaceChildren();
+        rendered = 0;
+      }
+      for (const line of all.slice(rendered)) logEl.append(lineEl(line));
+      rendered = all.length;
+
+      // Decision panels
+      const showCheck1 = !!seed && s.step === 2 && !s.choice;
+      check1.hidden = !showCheck1;
+      if (showCheck1 && seed && !optionsEl.childElementCount) {
+        for (const option of seed.options) {
+          const b = document.createElement('button');
+          b.type = 'button';
+          b.className = 'choice choice-solid';
+          b.textContent = option;
+          b.addEventListener('click', () => pickOption(option));
+          optionsEl.append(b);
+        }
+      }
+      if (!showCheck1) optionsEl.replaceChildren();
+      check2.hidden = !(s.step === 5 && !s.outcome);
+      endEl.hidden = !s.outcome;
+
+      // Proof column
+      let st = STATUS[s.step] ?? STATUS[0];
+      if (s.outcome === 'sent') st = SENT;
+      if (s.outcome === 'held') st = HELD;
+      statusEl.textContent = st[0];
+      statusEl.style.background = st[1];
+      statusEl.style.color = st[2];
+
+      const built = s.step >= 4;
+      previewTitle.textContent = s.choice || (seed ? 'Reading your product' : 'Your next improvement');
+      newTag.textContent = built ? 'New, in your existing screen' : 'Coming soon to this screen';
+      newEl.style.borderColor = built ? '#FF6A3D' : '#B4ADD6';
+      newEl.style.background = built ? '#FFF1E8' : 'transparent';
+      previewNote.textContent = built
+        ? 'A working proof in the product your customers already use.'
+        : 'Pick what your customers said and watch the change land here.';
+
+      const active = document.activeElement as HTMLElement | null;
+      if (focusWasInside && (!active || !root.contains(active) || !isVisible(active))) {
+        const next = Array.from(root.querySelectorAll<HTMLElement>('.main :is(button, a)')).find(isVisible);
+        (next ?? logEl).focus();
+      }
+    }
+
+    function pickSeed(key: SeedKey) {
+      set({ seed: key, step: 1 });
+      later(() => set({ step: 2 }), 1200);
+    }
+
+    function pickOption(option: string) {
+      set({ choice: option, step: 3 });
+      later(() => set({ step: 4 }), 1000);
+      later(() => set({ step: 5 }), 2400);
+    }
+
+    function reset() {
+      timers.forEach((t) => clearTimeout(t));
+      timers = [];
+      set({ ...initial });
+    }
+
+    root.querySelectorAll<HTMLButtonElement>('[data-seed]').forEach((b) => {
+      b.addEventListener('click', () => pickSeed(b.dataset.seed as SeedKey));
+    });
+    $('[data-send]').addEventListener('click', () => set({ outcome: 'sent' }));
+    $('[data-hold]').addEventListener('click', () => set({ outcome: 'held' }));
+    $('[data-reset]').addEventListener('click', reset);
+
+    render();
+  }
+</script>
+
+<style>
+  .console-section {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 0 24px 24px;
+  }
+  .console {
+    background: var(--surface);
+    border: 1px solid var(--rule);
+    border-radius: 22px;
+    overflow: hidden;
+  }
+  .strip {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 6px;
+    padding: 18px 28px 0;
+  }
+  .seg {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+  .seg-bar {
+    height: 6px;
+    border-radius: 3px;
+    background: var(--rule);
+  }
+  .seg-label {
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--idle);
+  }
+  .cols {
+    display: flex;
+    flex-wrap: wrap;
+  }
+  .main {
+    flex: 999 1 560px;
+    min-width: 0;
+    padding: 28px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+  }
+  .legend {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 14px 24px;
+    font-size: 15px;
+    color: var(--ink-2);
+  }
+  .key {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .dot {
+    width: 10px;
+    height: 10px;
+  }
+  .dot-agent {
+    border-radius: 50%;
+    background: var(--cold);
+  }
+  .dot-you {
+    border-radius: 3px;
+    background: var(--amber);
+  }
+  .where {
+    color: var(--muted);
+  }
+  .seeds {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .ask {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--amber);
+  }
+  .buttons {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+  .log {
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    outline: none;
+  }
+  .log:empty {
+    display: none;
+  }
+  .log :global(.line) {
+    display: flex;
+    gap: 14px;
+    align-items: baseline;
+  }
+  .log :global(.line-dot) {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    transform: translateY(1px);
+  }
+  .log :global(.line-agent .line-dot) {
+    border-radius: 50%;
+    background: var(--cold);
+  }
+  .log :global(.line-you .line-dot) {
+    border-radius: 3px;
+    background: var(--amber);
+  }
+  .log :global(.line-agent .line-text) {
+    color: var(--agent-ink);
+  }
+  .log :global(.line-you .line-text) {
+    color: var(--you-ink);
+  }
+  .panel {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 18px;
+    border-radius: 14px;
+    background: var(--panel);
+    border: 1px solid var(--amber);
+  }
+  .panel[hidden],
+  .end[hidden],
+  .seeds[hidden] {
+    display: none;
+  }
+  .panel-title {
+    margin: 0;
+    font-weight: 700;
+    color: var(--amber);
+  }
+  .end {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px 20px;
+    align-items: center;
+    padding-top: 6px;
+  }
+  .run {
+    padding: 14px 22px;
+    min-height: 50px;
+  }
+  .reset {
+    font-family: inherit;
+    font-size: 17px;
+    font-weight: 500;
+    padding: 12px 6px;
+    min-height: 48px;
+    border: none;
+    background: transparent;
+    color: var(--muted);
+    text-decoration: underline;
+    cursor: pointer;
+  }
+  .proof {
+    flex: 1 1 360px;
+    min-width: 0;
+    padding: 28px;
+    background: var(--surface-2);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+  .proof-label {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: var(--muted);
+  }
+  .app {
+    background: #F3F0FF;
+    color: #13102A;
+    border-radius: 14px;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-height: 290px;
+  }
+  .app-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 12px 16px;
+    background: #DCD7F0;
+  }
+  .app-name {
+    font-size: 14px;
+    font-weight: 700;
+  }
+  .pill {
+    font-size: 13px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 999px;
+    background: #E7E3F7;
+    color: #4A4370;
+  }
+  .app-body {
+    padding: 18px 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    flex-grow: 1;
+  }
+  .ghost {
+    height: 11px;
+    border-radius: 6px;
+    background: #CFC9E6;
+  }
+  .new {
+    margin-top: 8px;
+    padding: 14px;
+    border-radius: 10px;
+    border: 2px dashed #B4ADD6;
+    background: transparent;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .new-tag {
+    font-size: 13px;
+    font-weight: 700;
+    color: #8A3A12;
+  }
+  .new-title {
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+  .note {
+    margin: auto 0 0;
+    padding-top: 12px;
+    font-size: 15px;
+    color: #4A4370;
+  }
+  .disclaimer {
+    margin: 0;
+    font-size: 14px;
+    color: var(--muted);
+  }
+</style>
