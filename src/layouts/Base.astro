@@ -6,7 +6,13 @@ import '@fontsource/schibsted-grotesk/800.css';
 import '@fontsource/noto-kufi-arabic/arabic-500.css';
 import '../styles/global.css';
 
-const title = 'AI Anvil, by Wassim Askoul';
+interface Props {
+  title?: string;
+  // Keeps the page out of search results (and drops the canonical, which points at the home page).
+  noindex?: boolean;
+}
+
+const { title = 'AI Anvil, by Wassim Askoul', noindex = false } = Astro.props;
 const description =
   'I work inside products that already exist: your code, your customers, your team. Humans decide. Agents carry.';
 const siteUrl = 'https://aianvil.co/';
@@ -20,7 +26,7 @@ const ogImage = new URL('/og.png', siteUrl).href;
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
     <meta name="description" content={description} />
-    <link rel="canonical" href={siteUrl} />
+    {noindex ? <meta name="robots" content="noindex" /> : <link rel="canonical" href={siteUrl} />}
     <link rel="icon" type="image/png" href="/favicon.png" />
     <link rel="sitemap" href="/sitemap-index.xml" />
     <meta name="theme-color" content="#13102A" />
