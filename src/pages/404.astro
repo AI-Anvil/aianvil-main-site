@@ -1,0 +1,69 @@
+---
+import Base from '../layouts/Base.astro';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import BookingDialog from '../components/BookingDialog.astro';
+import { BOOKING_URL } from '../data/links';
+---
+
+<Base title="Page not found | AI Anvil" noindex>
+  <div id="top" class="page">
+    <Header />
+    <main>
+      <section aria-labelledby="missing-title" class="missing">
+        <h1 id="missing-title">This one didn't make it off the anvil.</h1>
+        <p class="line">The page you're looking for doesn't exist. The rest of the site does.</p>
+        <div class="cta">
+          <a href="/" class="btn btn-molten home">Back to aianvil.co</a>
+          <a href={BOOKING_URL} target="_blank" rel="noopener" data-booking class="btn book">Book an AI Readiness Chat</a>
+        </div>
+      </section>
+    </main>
+    <Footer />
+  </div>
+  <BookingDialog />
+</Base>
+
+<style>
+  .missing {
+    max-width: var(--max);
+    margin: 0 auto;
+    padding: 96px 24px 64px;
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+  }
+  h1 {
+    margin: 0;
+    max-width: 16ch;
+    font-weight: 800;
+    font-size: clamp(44px, 6.4vw, 92px);
+    line-height: 0.98;
+    letter-spacing: -0.045em;
+  }
+  .line {
+    margin: 0;
+    max-width: 40ch;
+    font-size: 21px;
+    line-height: 1.5;
+    color: var(--ink-2);
+  }
+  .cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-top: 12px;
+  }
+  .home,
+  .book {
+    padding: 14px 24px;
+    min-height: 52px;
+  }
+  .book {
+    border: 1.5px solid var(--lilac);
+    color: var(--ink);
+  }
+  .book:hover {
+    color: var(--amber);
+  }
+</style>
