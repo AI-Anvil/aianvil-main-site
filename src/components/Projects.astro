@@ -1,7 +1,7 @@
 ---
 import { getImage } from 'astro:assets';
 import poster from '../assets/perfect-placement-demo-poster.png';
-import { PERFECT_PLACEMENT_URL, SPECDR_URL } from '../data/links';
+import { PERFECT_PLACEMENT_URL, RIPD_CASE_STUDY_URL, SPECDR_URL } from '../data/links';
 
 const posterImage = await getImage({ src: poster, format: 'webp', width: 1200 });
 const videoLabel =
@@ -66,8 +66,7 @@ const videoLabel =
       </div>
       <div class="row-body">
         <p>A trading card platform for collectors, with computer vision and AI-assisted grading. 40 organic daily users within three months of launch.</p>
-        <!-- TODO: link RIP'D case study -->
-        <span class="row-link row-link-pending">Read the case study</span>
+        <a href={RIPD_CASE_STUDY_URL} target="_blank" rel="noopener" class="row-link">Read the case study</a>
       </div>
     </article>
     <article class="row row-last">
@@ -190,8 +189,5 @@ const videoLabel =
   }
   .row-link {
     font-weight: 700;
-  }
-  .row-link-pending {
-    color: var(--muted);
   }
 </style>
