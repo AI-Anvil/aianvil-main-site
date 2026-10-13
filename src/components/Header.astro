@@ -1,0 +1,63 @@
+---
+import Mark from './Mark.astro';
+import { BOOKING_URL, SUBSTACK_URL } from '../data/links';
+---
+
+<div class="wrap">
+  <header class="header">
+    <a href="#top" class="brand">
+      <Mark height={34} />
+      <span class="brand-name">AI Anvil</span>
+      <span class="brand-by">by Wassim Askoul</span>
+    </a>
+    <nav aria-label="Primary" class="nav">
+      <a href="#work">Projects</a>
+      <a href="#services">Work with me</a>
+      <a href={SUBSTACK_URL}>Writing</a>
+      <a href={BOOKING_URL} data-booking class="btn btn-molten talk">Let's talk</a>
+    </nav>
+  </header>
+</div>
+
+<style>
+  .header {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+    padding: 28px 0;
+  }
+  .brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    flex-wrap: wrap;
+    text-decoration: none;
+  }
+  .brand-name {
+    font-weight: 800;
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    color: var(--ink);
+  }
+  .brand-by {
+    font-size: 16px;
+    color: var(--muted);
+  }
+  .nav {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 26px;
+    font-size: 17px;
+    font-weight: 500;
+  }
+  .nav a {
+    text-decoration: none;
+  }
+  .talk {
+    padding: 12px 20px;
+    min-height: 44px;
+  }
+</style>
