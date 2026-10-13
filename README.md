@@ -28,6 +28,7 @@ npm run preview   # serve the production build locally
 - **Copy:** each section is a component in `src/components/` (`Header`, `Hero`, `Console`, `WhereIveBuilt`, `Projects`, `WorkWithMe`, `Writing`, `Footer`). Copy is verbatim from the design source; change it there first if it changes.
 - **Console scenarios:** the seeds (customer quote, problem proof line, the two options) are in `src/data/seeds.ts`. The step-by-step lines and timings are in the script inside `src/components/Console.astro`.
 - **Links:** booking, Substack, GitHub, LinkedIn and Specdr URLs are in `src/data/links.ts`.
+- **Booking:** every booking button (`a[data-booking]`) opens the dialog in `src/components/BookingDialog.astro`, which loads the Google Calendar appointment schedule in an iframe on first open. To change the schedule, update both booking URLs in `src/data/links.ts`.
 - **Design tokens:** CSS variables at the top of `src/styles/global.css`.
 
 ## Social image
