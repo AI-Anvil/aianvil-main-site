@@ -1,5 +1,5 @@
 <section aria-labelledby="hero-title" class="hero">
-  <h1 id="hero-title">Humans decide. Agents carry.</h1>
+  <h1 id="hero-title"><span class="line">Humans decide.</span> <span class="line">Agents carry.</span></h1>
   <div class="lede">
     <p class="intro">I work inside products that already exist: your code, your customers, your team. Anyone can spin up a new app in an afternoon. I make the one you have better, fast, and show your team how as we go.</p>
     <p class="hint">Try it below. The agents carry, you make the calls.</p>
@@ -20,9 +20,15 @@
     margin: 0;
     flex: 999 1 560px;
     font-weight: 800;
-    font-size: clamp(54px, 7.6vw, 112px);
+    /* Always two lines. "Humans decide." is 7.4em wide, so the size is capped to fit
+       beside the intro on desktop and inside the gutters on phones. */
+    font-size: min(clamp(54px, 7vw, 104px), calc((100vw - 48px) / 7.5));
     line-height: 0.94;
     letter-spacing: -0.045em;
+  }
+  .line {
+    display: block;
+    white-space: nowrap;
   }
   .lede {
     flex: 1 1 340px;
